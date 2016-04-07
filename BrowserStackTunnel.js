@@ -48,7 +48,7 @@ BrowserStackTunnel.prototype = util.mixin(Object.create(_super), /** @lends modu
 
 	directory: pathUtil.join(__dirname, 'browserstack'),
 
-	hostname: 'hub.browserstack.com',
+	hostname: 'hub-usw.browserstack.com',
 
 	/**
 	 * If true, any other tunnels running on the account will be killed when the tunnel is started.
