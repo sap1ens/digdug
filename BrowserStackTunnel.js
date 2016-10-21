@@ -174,6 +174,8 @@ BrowserStackTunnel.prototype = util.mixin(Object.create(_super), /** @lends modu
 	},
 
 	sendJobState: function (jobId, data) {
+		var _this = this;
+
 		var payload = JSON.stringify({
 			status: data.status || data.success ? 'completed' : 'error'
 		});
@@ -190,11 +192,26 @@ BrowserStackTunnel.prototype = util.mixin(Object.create(_super), /** @lends modu
 			proxy: this.proxy
 		}).then(function (response) {
 			if (response.statusCode >= 200 && response.statusCode < 300) {
+				_this._printMetadata(jobId);
+
 				return true;
 			}
 			else {
 				throw new Error(response.data || 'Server reported ' + response.statusCode + ' with no other data.');
 			}
+		});
+	},
+
+	_printMetadata: function (jobId) {
+		return request.get('https://www.browserstack.com/automate/sessions/' + jobId + '.json', {
+			password: this.accessKey,
+			user: this.username,
+			proxy: this.proxy
+		}).then(function (response) {
+			var metadata = JSON.parse(response.data.toString());
+			console.log("URL: " + metadata.automation_session.browser_url);
+			console.log("Logs: " + metadata.automation_session.logs);
+			console.log("Video: " + metadata.automation_session.video_url);
 		});
 	},
 
